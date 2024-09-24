@@ -1,0 +1,3 @@
+node_modules/
+postgre-variables.env
+.env
