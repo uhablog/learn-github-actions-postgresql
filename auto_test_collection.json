@@ -1,0 +1,148 @@
+{
+	"info": {
+		"_postman_id": "6151fe8e-d195-43d9-9546-55137f0e23ca",
+		"name": "github-actions-postgresql",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "28498794"
+	},
+	"item": [
+		{
+			"name": "初期データの取得",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"ステータスコードが200か\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"1つ目のデータのnameがAliceか\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData[0].name).to.eql(\"Alice\");",
+							"});",
+							"",
+							"pm.test(\"1つ目のデータのageが30歳か\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData[0].age).to.eql(30);",
+							"});",
+							"",
+							"pm.test(\"2つ目のデータのnameがBobか\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData[1].name).to.eql(\"Bob\");",
+							"});",
+							"",
+							"pm.test(\"2つ目のデータのageが25歳か\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData[1].age).to.eql(25);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/data",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"data"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "データ登録",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"ステータスコードは201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"test2\",\n    \"age\": 15\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/data",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"data"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "登録データのチェック",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"ステータスコードが200か\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"3つ目のデータのnameがtest2か\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData[2].name).to.eql(\"test2\");",
+							"});",
+							"",
+							"pm.test(\"1つ目のデータのageが15歳か\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData[2].age).to.eql(15);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/data",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"data"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

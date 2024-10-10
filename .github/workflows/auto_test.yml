@@ -1,0 +1,78 @@
+name: Run Tests
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: mydb
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U user"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+      # Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      # Set up Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+
+      # Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # Wait for PostgreSQL to be ready
+      - name: Wait for PostgreSQL to be ready
+        run: |
+          until pg_isready -h localhost -U user -d mydb; do
+            echo "Waiting for postgres...";
+            sleep 5;
+          done
+
+      # Run migrations or create tables (if necessary)
+      - name: Create tables
+        run: |
+          PGPASSWORD=password psql -h localhost -U user -d mydb -f init.sql
+
+      # Start the application
+      - name: Start the app
+        run: |
+          npm run build
+          npm start &
+          sleep 10 # wait for the server to be fully up
+        env:
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+          POSTGRES_HOST: localhost
+          POSTGRES_PORT: 5432
+
+      # Install Newman
+      - name: Install Newman
+        run: npm install -g newman
+
+      # Run Postman tests using Newman
+      - name: Run Postman tests
+        run: newman run auto_test_collection.json
+
+      # Optionally: stop the application
+      - name: Stop the app
+        run: kill $(lsof -t -i:3000)
