@@ -55,8 +55,7 @@ jobs:
       # Start the application
       - name: Start the app
         run: |
-          npm run build
-          npm start &
+          npx ts-node src/index.ts &
           sleep 10 # wait for the server to be fully up
         env:
           POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
