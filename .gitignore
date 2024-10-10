@@ -2,3 +2,4 @@ node_modules/
 postgre-variables.env
 .env
 .DS_Store
+/learn-github-actions-postgresql

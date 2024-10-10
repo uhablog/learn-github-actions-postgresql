@@ -30,13 +30,21 @@
 npm install
 ```
 
-3.Docker ComposeでPostgreSQLデータベースを起動します。
+3.PostgreSQLの起動に必要な環境変数をpostgre-variables.envファイルに設定します。
 
-```bash
-docker-compose up -d
+```postgre-variables.env
+POSTGRES_USER=user
+POSTGRES_PASSWORD=password
+POSTGRES_DB=mydb
 ```
 
-4.必要な環境変数を .env ファイルに設定します。例:
+4.Docker ComposeでPostgreSQLデータベースを起動します。
+
+```bash
+docker compose up -d
+```
+
+5.必要な環境変数を .env ファイルに設定します。例:
 
 ```.env
 POSTGRES_USER=user
@@ -46,13 +54,13 @@ POSTGRES_HOST=localhost
 POSTGRES_PORT=5432
 ```
 
-5.アプリケーションを起動します。
+6.アプリケーションを起動します。
 
 ```bash
 npx ts-node src/index.ts
 ```
 
-6.アプリケーションには以下のエンドポイントが用意されています。
+7.アプリケーションには以下のエンドポイントが用意されています。
 
 - GET: http://localhost:3000/data  -> DBのデータを取得してJSONで返却
 - POST: http://localhost:3000/data -> DBにデータの登録を行う
